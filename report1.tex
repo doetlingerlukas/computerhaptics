@@ -1,0 +1,49 @@
+\input{settings.tex}
+
+\pgfplotsset{every tick label/.append style={font=\tiny}}
+
+\begin{document}
+  \title{Computer Haptics: Assignment 1}
+  \maketitle
+
+  \section*{Task 1}
+
+  \section*{Task 2}
+
+  As an initial step, the values returned by the magnetic sensor of the \textit{Haptik} were analysed to determine the highest one returned before flipping to zero. This value $m$ can be different for each device. In this case $m = 972$ was measured. Since the magnetic sensor records starting at zero after a full rotation, those flips, that occur after a full rotation, are represented by $f$. Using those variables, we can calculate the absolute position $p_{abs}$ with
+  \begin{equation*}
+    p_{abs} = \phi + (f * m)
+  \end{equation*}
+  where $\phi$ is the value returned by the magnetic sensor.
+
+  \section*{Task 3}
+
+  We can obtain the following graph by measuring the absolute positions at different degrees.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$p_{abs}$},
+        ylabel={$\alpha$},
+        xmin=0, xmax=8500,
+        ymin=-55, ymax=55,
+        xtick={1000,2000,3000,4000,5000,6000,7000,8000},
+        ytick={-50,-25,0,25,50},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+      \addplot[ no marks ] coordinates { (0,-55) (8500,55) };
+
+      \addplot[ cyan, only marks ] coordinates {
+        (347,-50) (1060,-40) (1980,-30) (2670,-20) (3400,-10) (4200,0) (4960,10) (5870,20) (6500,30) (7110,40) (8060,50)
+      };
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+  
+  The blue dots represent the measure values. We can clearly see some imprecision, which is due to the imperfection of the motor-mount and the string itself.
+
+\end{document}

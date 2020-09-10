@@ -1,1 +1,12 @@
 */build
+
+# LaTeX
+
+*.aux
+*.log
+*.gz
+*.lb
+*.pdf
+*.watcher_pid
+*.fls
+*.fdb_latexmk
