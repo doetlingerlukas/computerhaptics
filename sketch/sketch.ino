@@ -26,18 +26,19 @@ void loop() {
   
   int sensorValue = analogRead(sensorPin);
 
-  // digitalWrite(dirPin, HIGH);
-  //analogWrite(pwmPin, 50);
+  digitalWrite(dirPin, HIGH);
+  analogWrite(pwmPin, 75);
+  delay(150);
 
-  delay(3000);
+  analogWrite(pwmPin, 0);
+  delay(500);
+  
+  digitalWrite(dirPin, LOW);
+  analogWrite(pwmPin, 75);
+  delay(150);
 
-  // digitalWrite(dirPin, LOW);
-
-  // delay(3000);
-
-  //analogWrite(pwmPin, 0);
-
-  delay(7000);
+  analogWrite(pwmPin, 0);
+  delay(500);
 
   Serial.println(sensorValue);
   
