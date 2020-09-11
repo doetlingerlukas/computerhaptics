@@ -8,9 +8,16 @@
 
   \section*{Task 1}
 
+  While assembling the \textit{Hapkit}, the following important points were noticed:
+  \begin{itemize}
+    \item To get decent measurements of the magnetic sensor, the magnet should be as close as possible.
+    \item It's best to wrap the string around the motor several times to create proper friction.
+    \item There should be proper tension on the string, so the paddle does not move if the motor is not rotating.
+  \end{itemize}
+
   \section*{Task 2}
 
-  As an initial step, the values returned by the magnetic sensor of the \textit{Haptik} were analysed to determine the highest one returned before flipping to zero. This value $m$ can be different for each device. In this case $m = 972$ was measured. Since the magnetic sensor records starting at zero after a full rotation, those flips, that occur after a full rotation, are represented by $f$. Using those variables, we can calculate the absolute position $p_{abs}$ with
+  As an initial step, the values returned by the magnetic sensor of the \textit{Hapkit} were analysed to determine the highest one returned before flipping to zero. This value $m$ can be different for each device. In this case $m = 972$ was measured. Since the magnetic sensor records starting at zero after a full rotation, those flips, that occur after a full rotation, are represented by $f$. Using those variables, we can calculate the absolute position $p_{abs}$ with
   \begin{equation*}
     p_{abs} = \phi + (f * m)
   \end{equation*}
@@ -19,7 +26,7 @@
   \begin{equation*}
     \alpha = \frac{\phi + (f * m)}{c} = \frac{p_{abs}}{c}
   \end{equation*}.
-  This formula applies to a degree range starting at 0, as $p_{abs}$ is always a positive number. One would have to subtract 50 degrees to get a value between -50 and 50 for the \textit{Haptik} device. Due to the imprecision of the device, the degree marks on the paddle, don't match the absolute position, as it moves from approximately -55 degrees to 55. To match $p_{abs} = 0$ to the leftmost mark on the paddle, for which $p_{abs} = 347$, we would have to subtract that from $p_{abs}$.
+  This formula applies to a degree range starting at 0, as $p_{abs}$ is always a positive number, since we starting calibrating the paddle from the leftmost point. One would have to subtract 50 degrees to get a value between -50 and 50 for the \textit{Hapkit} device. Due to the imprecision of the device, the degree marks on the paddle, don't match the absolute position, as it moves from approximately -55 degrees to 55. To match $p_{abs} = 0$ to the leftmost mark on the paddle, for which $p_{abs} = 347$, we would have to subtract that from $p_{abs}$.
 
   \section*{Task 3}
 
