@@ -15,10 +15,15 @@
     p_{abs} = \phi + (f * m)
   \end{equation*}
   where $\phi$ is the value returned by the magnetic sensor.
+  To obtain the angle of the paddle $\alpha$, we need to find a constant to map from an absolute position. We can estimate that constant by calculating the average distance between the measurements from \textit{Task 3}. This leaves us with an average change $c = 77,13$ in absolute position every degree. Concluding from that, we get
+  \begin{equation*}
+    \alpha = \frac{\phi + (f * m)}{c} = \frac{p_{abs}}{c}
+  \end{equation*}.
+  This formula applies to a degree range starting at 0, as $p_{abs}$ is always a positive number. One would have to subtract 50 degrees to get a value between -50 and 50 for the \textit{Haptik} device. Due to the imprecision of the device, the degree marks on the paddle, don't match the absolute position, as it moves from approximately -55 degrees to 55. To match $p_{abs} = 0$ to the leftmost mark on the paddle, for which $p_{abs} = 347$, we would have to subtract that from $p_{abs}$.
 
   \section*{Task 3}
 
-  We can obtain the following graph by measuring the absolute positions at different degrees.
+  We can obtain the following graph by measuring the absolute positions at different degrees. The paddle itself is marked at every 10 degree step.
 
   \begin{figure}[H]
     \centering
@@ -44,6 +49,6 @@
     \end{tikzpicture}
   \end{figure}
   
-  The blue dots represent the measure values. We can clearly see some imprecision, which is due to the imperfection of the motor-mount and the string itself.
+  The blue dots represent the measure values. We can clearly see some imprecision, which is due to the imperfection of the motor-mount and the string itself. Furthermore, the it's worth mentioning that the paddle moves from approximately -55 degrees to 55.
 
 \end{document}
