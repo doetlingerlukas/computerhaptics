@@ -1,14 +1,23 @@
 // Includes
 #include <math.h>
 
+// Pins
 int pwmPin = 3;
 int dirPin = 12;
-
-int incData = 0;
-
 int sensorPin = A2;
 
-// Specific to the prototype
+// Constants for force-torque conversion
+double rp = 0.004191;
+double rs = 0.073152;
+double rh = 0.065659;
+
+// Force output variables
+double force = 0;           // force at the handle
+double Tp = 0;              // torque of the motor pulley
+double duty = 0;            // duty cylce (between 0 and 255)
+unsigned int output = 0;    // output command to the motor
+
+// Magnetic sensor values specific to the prototype
 int minVal = 48;
 int maxVal = 972;
 
@@ -27,12 +36,26 @@ const int flipThresh = 700;  // threshold to determine whether or not a flip ove
 boolean flipped = false;
 
 void setup() {
-  Serial.begin(9600);
-  
-  pinMode(pwmPin, OUTPUT);
-  pinMode(dirPin, OUTPUT);
+  // Set up serial communication
+  Serial.begin(57600);
 
-  pinMode(sensorPin, INPUT);
+  // Set PWM frequency
+  setPwmFrequency(pwmPin, 1);
+
+  // Input pins
+  pinMode(sensorPin, INPUT); // set MR sensor pin to be an input
+
+  // Output pins
+  pinMode(pwmPin, OUTPUT);  // PWM pin for motor
+  pinMode(dirPin, OUTPUT);  // dir pin for motor
+
+  // Initialize motor
+  analogWrite(pwmPin, 0);     // set to not be spinning (0/255)
+  digitalWrite(dirPin, LOW);  // set direction
+
+  // Initialize position valiables
+  lastLastRawPos = analogRead(sensorPin);
+  lastRawPos = analogRead(sensorPin);
 }
 
 void loop() {
@@ -96,4 +119,81 @@ void updatePos() {
     flipped = false;
   }
 
+}
+
+/*
+    calPosMeter()
+*/
+void calPosMeter()
+{
+ 
+}
+/*
+    forceRendering()
+*/
+void forceRendering()
+{
+  // Add the function for force calculation here.
+}
+
+/*
+      Output to motor
+*/
+void motorControl()
+{
+
+  Tp = rp / rs * rh * force;  // Compute the require motor pulley torque (Tp) to generate that force
+  // Determine correct direction for motor torque
+  // You may need to reverse the digitalWrite functions according to your motor connections
+  if (force < 0) {
+    digitalWrite(dirPin, HIGH);
+  } else {
+    digitalWrite(dirPin, LOW);
+  }
+
+  // Compute the duty cycle required to generate Tp (torque at the motor pulley)
+  duty = sqrt(abs(Tp) / 0.03);
+
+  // Make sure the duty cycle is between 0 and 100%
+  if (duty > 1) {
+    duty = 1;
+  } else if (duty < 0) {
+    duty = 0;
+  }
+  output = (int)(duty * 255);  // convert duty cycle to output signal
+  analogWrite(pwmPin, output); // output the signal
+}
+
+/*
+   setPwmFrequency
+*/
+void setPwmFrequency(int pin, int divisor) {
+  byte mode;
+  if (pin == 5 || pin == 6 || pin == 9 || pin == 10) {
+    switch (divisor) {
+      case 1: mode = 0x01; break;
+      case 8: mode = 0x02; break;
+      case 64: mode = 0x03; break;
+      case 256: mode = 0x04; break;
+      case 1024: mode = 0x05; break;
+      default: return;
+    }
+    if (pin == 5 || pin == 6) {
+      TCCR0B = TCCR0B & 0b11111000 | mode;
+    } else {
+      TCCR1B = TCCR1B & 0b11111000 | mode;
+    }
+  } else if (pin == 3 || pin == 11) {
+    switch (divisor) {
+      case 1: mode = 0x01; break;
+      case 8: mode = 0x02; break;
+      case 32: mode = 0x03; break;
+      case 64: mode = 0x04; break;
+      case 128: mode = 0x05; break;
+      case 256: mode = 0x06; break;
+      case 1024: mode = 0x7; break;
+      default: return;
+    }
+    TCCR2B = TCCR2B & 0b11111000 | mode;
+  }
 }
