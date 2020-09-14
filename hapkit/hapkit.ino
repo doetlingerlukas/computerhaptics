@@ -20,6 +20,7 @@ unsigned int output = 0;    // output command to the motor
 // Magnetic sensor values specific to the prototype
 int minVal = 48;
 int maxVal = 972;
+const double absPosPerDegree = 72.13;
 
 // Position tracking variables
 int absPos = 0;
@@ -97,7 +98,7 @@ void updatePos() {
 }
 
 void calcAngle() {
-  angle = absPos / 72.13;
+  angle = absPos / absPosPerDegree;
 
   //Serial.print("Angle: ");
   //Serial.print(angle);
@@ -114,7 +115,17 @@ void calPosMeter() {
     forceRendering()
 */
 void forceRendering() {
-  springForceRendering();
+  wallForceRendering();
+
+  // Failsave
+  if ((angle > 35.0) || (angle < -35.0)) {
+    force = 0;
+  }
+
+  Serial.print(absPos);
+  Serial.print(" ");
+  Serial.print(force);
+  Serial.print("\n");
 }
 
 void springForceRendering() {
@@ -135,16 +146,23 @@ void springForceRendering() {
   } else {
     force = 0;
   }
+}
 
-  // Failsave
-  if ((angle > 35.0) || (angle < -35.0)) {
+void wallForceRendering() {
+
+  // Wall constant k
+  // Unstable if > 1.25;
+  const double wallConstant = 0.75;
+
+  // Wall is at 5mm, which is an angle of 4.76, as the radius is 60mm
+  const double wallStart = -4.76;
+
+  // Apply force
+  if ((angle < wallStart)) {
+    force = absPos * wallConstant;
+  } else {
     force = 0;
   }
-
-  Serial.print(absPos);
-  Serial.print(" ");
-  Serial.print(force);
-  Serial.print("\n");
 }
 
 /*
