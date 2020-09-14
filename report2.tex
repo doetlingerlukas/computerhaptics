@@ -6,6 +6,31 @@
   \title{Computer Haptics: Assignment 2}
   \maketitle
 
-  \section*{Task 1}
+  \section*{Task 1 - Spring}
+
+  For this experiment, the absolute position $x_{user}$ was multiplied with the stiffness factor $f$ to calculate the Force. The following graph shows the output when moving the handle in one direction. The displayed results were generated with $f = 0.002$.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$x_{user}$},
+        ylabel={F},
+        xmin=0, xmax=2300,
+        ymin=0, ymax=4.50,
+        xtick={500,1000,1500,2000},
+        ytick={1,2,3,4},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ smooth, very thick, color=cyan ] table {res/measurements-2-1.txt};
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+  We can clearly see some outliers due to measurement imprecision, as the graph uses about 3000 coordinates.\\
+  Increasing the stiffness resulted in the expected instability of the device, which started to show at $f = 0.008$. This can be noticed by the paddle bouncing from left to right without any interaction, due to imprecision of the \textit{Hapkit}. The high force moves the paddle beyond the zero position into the \textit{"opposite spring"}.
 
 \end{document}
