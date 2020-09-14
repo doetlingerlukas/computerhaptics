@@ -27,6 +27,7 @@ int rawPos = 0;
 int lastRawPos = 0;
 int flipNumber = 0;
 const int flipThresh = 300;
+double angle = 0;
 
 void setup() {
   // Set up serial communication
@@ -53,6 +54,9 @@ void setup() {
 void loop() {
   updatePos();
   calcAngle();
+  
+  forceRendering();
+  motorControl();
 }
 
 void updatePos() {
@@ -84,20 +88,20 @@ void updatePos() {
     absPos += rawDiff;
   }
 
-  Serial.print("Pos: ");
-  Serial.print(absPos);
-  Serial.print("\n");
+  //Serial.print("Pos: ");
+  //Serial.print(absPos);
+  //Serial.print("\n");
 
   // Set last raw position
   lastRawPos = rawPos;
 }
 
 void calcAngle() {
-  double alpha = absPos / 77.13;
+  angle = absPos / 72.13;
 
-  Serial.print("Angle: ");
-  Serial.print(alpha);
-  Serial.print("\n");
+  //Serial.print("Angle: ");
+  //Serial.print(angle);
+  //Serial.print("\n");
 }
 
 /*
@@ -110,7 +114,37 @@ void calPosMeter() {
     forceRendering()
 */
 void forceRendering() {
-  // Add the function for force calculation here.
+  springForceRendering();
+}
+
+void springForceRendering() {
+
+  // Spring constant k
+  // Unstable if > 0.006;
+  const double springConstant = 0.002;
+
+  // Angle where the spring starts
+  const double startAngle = 0.0;
+
+  // Calculation of spring
+  double calculatedForce = absPos * springConstant;
+
+  // Apply force
+  if ((angle > startAngle) || (angle < -startAngle)) {
+    force = calculatedForce;
+  } else {
+    force = 0;
+  }
+
+  // Failsave
+  if ((angle > 35.0) || (angle < -35.0)) {
+    force = 0;
+  }
+
+  Serial.print(absPos);
+  Serial.print(" ");
+  Serial.print(force);
+  Serial.print("\n");
 }
 
 /*
@@ -136,6 +170,7 @@ void motorControl() {
     duty = 0;
   }
   output = (int)(duty * 255);  // convert duty cycle to output signal
+  
   analogWrite(pwmPin, output); // output the signal
 }
 
