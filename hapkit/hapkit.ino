@@ -17,10 +17,11 @@ double Tp = 0;              // torque of the motor pulley
 double duty = 0;            // duty cylce (between 0 and 255)
 unsigned int output = 0;    // output command to the motor
 
-// Magnetic sensor values specific to the prototype
+// Values specific to the prototype
 int minVal = 48;
 int maxVal = 972;
 const double absPosPerDegree = 72.13;
+const double handle_radius = 0.065659;   //[m]
 
 // Position tracking variables
 int absPos = 0;
@@ -29,6 +30,11 @@ int lastRawPos = 0;
 int flipNumber = 0;
 const int flipThresh = 300;
 double angle = 0;
+double posMeters = 0;
+double lastPosMeters = 0;
+double velocity = 0;
+double lastVelocity = 0;
+double lastLastVelocity = 0;
 
 void setup() {
   // Set up serial communication
@@ -54,7 +60,6 @@ void setup() {
 
 void loop() {
   updatePos();
-  calcAngle();
   
   forceRendering();
   motorControl();
@@ -89,33 +94,32 @@ void updatePos() {
     absPos += rawDiff;
   }
 
-  //Serial.print("Pos: ");
-  //Serial.print(absPos);
-  //Serial.print("\n");
-
   // Set last raw position
   lastRawPos = rawPos;
-}
 
-void calcAngle() {
+  // Calculate angle
   angle = absPos / absPosPerDegree;
 
-  //Serial.print("Angle: ");
-  //Serial.print(angle);
-  //Serial.print("\n");
+  // Calculate Position in meters
+  double radiant = (angle * PI) / 180;
+  posMeters = radiant * handle_radius;
+
+  // Calculate velocity
+  velocity = -(.95*.95) * lastLastVelocity + 2*.95*lastVelocity + (1-.95)*(1-.95)*(posMeters - lastPosMeters)/.0001;
+  lastPosMeters = posMeters;
+  lastLastVelocity = lastVelocity;
+  lastVelocity = velocity;
+
+  //Serial.print("Velocity: ");
+  //Serial.print(velocity);
+  //Serial.print("\n");  
 }
 
-/*
-    calPosMeter()
-*/
-void calPosMeter() {
- 
-}
 /*
     forceRendering()
 */
 void forceRendering() {
-  wallForceRendering();
+  textureRendering();
 
   // Failsave
   if ((angle > 35.0) || (angle < -35.0)) {
@@ -162,6 +166,21 @@ void wallForceRendering() {
     force = absPos * wallConstant;
   } else {
     force = 0;
+  }
+}
+
+void textureRendering() {
+
+  // Width of damping area
+  double w = .0015;
+  double damper = 1;
+  
+  for(int i=0; i<9; i=i+2){
+    if((abs(posMeters)>i*w)&&(abs(posMeters)<(i+1)*w)){
+      force = -damper * velocity;
+    } else if((abs(posMeters)>(i+1)*w)&&(abs(posMeters)<(i+2)*w)){
+      force = 0;
+    }
   }
 }
 
