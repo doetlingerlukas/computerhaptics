@@ -1,3 +1,5 @@
+// Based on: https://hapkit.stanford.edu/files/HapkitLab4SolutionsForWebsite.ino
+
 // Includes
 #include <math.h>
 
@@ -122,7 +124,7 @@ void forceRendering() {
   textureRendering();
 
   // Failsave
-  if ((angle > 35.0) || (angle < -35.0)) {
+  if ((angle > 45.0) || (angle < -45.0)) {
     force = 0;
   }
 
@@ -169,16 +171,34 @@ void wallForceRendering() {
   }
 }
 
+void frictionRendering(boolean coulomb) {
+
+  // Constant defining the force caused by friction
+  const double frictionForce = 0.2;
+
+  if (coulomb) {
+    // Render coulomb fricition
+    force = -frictionForce * sgn(velocity);
+  } else {
+    // Render viscous friction
+    force = -frictionForce * velocity;
+  }
+
+  if (velocity == 0.0) {
+    force = 0;
+  }
+}
+
 void textureRendering() {
 
   // Width of damping area
   double w = .0015;
   double damper = 1;
   
-  for(int i=0; i<9; i=i+2){
-    if((abs(posMeters)>i*w)&&(abs(posMeters)<(i+1)*w)){
+  for (int i=0; i<9; i=i+2) {
+    if ((abs(posMeters) > i*w) && (abs(posMeters) < (i+1)*w)) {
       force = -damper * velocity;
-    } else if((abs(posMeters)>(i+1)*w)&&(abs(posMeters)<(i+2)*w)){
+    } else if ((abs(posMeters) > (i+1)*w) && (abs(posMeters) < (i+2)*w)){
       force = 0;
     }
   }

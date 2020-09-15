@@ -32,9 +32,23 @@
 
   Increasing the stiffness resulted in the expected instability of the device, which started to show at $f = 0.008$. This can be noticed by the paddle bouncing from left to right without any interaction, due to imprecision of the \textit{Hapkit}. The high force moves the paddle beyond the zero position into the \textit{"opposite spring"}.
 
+  \section*{Task 2 - Friction}
+
+  Friction was rendered in two ways, coulomb and viscous. For \textit{Coulomb Friction}, force is applied against the movement direction of the handle in a constant way. Meaning no force is applied if velocity $v(t) = 0$. For a velocity $v(t) \neq 0$, the force is calculated by
+  \begin{equation*}
+    F_{coulomb} = -b * sgn(v(t))
+  \end{equation*},
+  where $b$ is the constant defining the friction. The following graph shows an experiment with coulomb friction:
+
+  \textit{Viscous Friction} on the other hand, acts similar if the velocity is zero, but renders and increasing friction for increasing velocity. This force is calculated as
+  \begin{equation*}
+    F_{viscous} = -b * v(t)
+  \end{equation*}
+  and has been used for the experiment visualized in the following graph:
+
   \section*{Task 3 - Virtual Wall}
 
-  The virtual wall was rendered at position $x_{wall} = 5mm$. The force was calculated by multiplying the distance past the wall with the constant $k$:
+  The virtual wall was rendered at position $pos_{wall} = 5mm$, which was calculated to an absolute position $x_{wall}$ at angle $\alpha \approx 4.76$. The force was calculated by multiplying the distance past the wall with the constant $k$:
   \begin{equation*}
     F = k * (x_{wall} - x_{user})
   \end{equation*}
@@ -63,5 +77,37 @@
   \end{figure}
 
   For $k > 1.25$, the device was found to be unstable as the resulting Force $F \approx 12.5$ created to much pressure on the rather fragile \textit{Hapkit}.
+
+  \section*{Task 5 - Textures}
+
+  To simulate textures, the force $F$ for velocity $v$ was calculated using a damper $b$ with the following formula, if the position is inside a damping area:
+  \begin{equation*}
+    F_{v} = -b_{v} * v_{t}
+  \end{equation*}
+  The damper itself was set to a value of 1 to minimize vibrations, that may occur due to the discontinuity in force.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$x_{user}$},
+        ylabel={F},
+        xmin=-3000, xmax=3000,
+        ymin=-2, ymax=2,
+        xtick={-2500,-1500,-500,0,500,1500,2500},
+        ytick={-2,-1,0,1,2},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ only marks, color=cyan ] table {res/measurements-2-5.txt};
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+  \section*{Resources}
+
+  Apart from the provided references on the assignment sheet, the example-code and instructions given at the website of the \textit{Hapkit} project,\\ \texttt{hapkit.stanford.edu}, were used to solve this assignment.
 
 \end{document}
