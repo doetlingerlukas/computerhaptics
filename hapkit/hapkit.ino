@@ -121,14 +121,14 @@ void updatePos() {
     forceRendering()
 */
 void forceRendering() {
-  textureRendering();
+  frictionRendering(true);
 
   // Failsave
   if ((angle > 45.0) || (angle < -45.0)) {
     force = 0;
   }
 
-  Serial.print(absPos);
+  Serial.print(-velocity);
   Serial.print(" ");
   Serial.print(force);
   Serial.print("\n");
@@ -174,17 +174,19 @@ void wallForceRendering() {
 void frictionRendering(boolean coulomb) {
 
   // Constant defining the force caused by friction
-  const double frictionForce = 0.2;
+  const double frictionForce = 1;
+  const double viscousForce = 0.75;
 
   if (coulomb) {
     // Render coulomb fricition
-    force = -frictionForce * sgn(velocity);
+    force = frictionForce * sgn(velocity);
   } else {
     // Render viscous friction
-    force = -frictionForce * velocity;
+    force = viscousForce * velocity;
   }
 
-  if (velocity == 0.0) {
+  // Prevent instability
+  if (!(velocity > 0.2 || velocity < -0.2 )) {
     force = 0;
   }
 }

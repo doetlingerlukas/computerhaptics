@@ -38,13 +38,55 @@
   \begin{equation*}
     F_{coulomb} = -b * sgn(v(t))
   \end{equation*},
-  where $b$ is the constant defining the friction. The following graph shows an experiment with coulomb friction:
+  where $b$ is the constant defining the friction. The following graph shows an experiment with coulomb friction, with $b = 1$:
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$v(t)$},
+        ylabel={F},
+        xmin=-5, xmax=5,
+        ymin=-2.5, ymax=2.5,
+        xtick={-4,-2,0,2,4},
+        ytick={-2,-1,0,1,2},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ only marks, color=cyan ] table {res/measurements-2-2-1.txt};
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
 
   \textit{Viscous Friction} on the other hand, acts similar if the velocity is zero, but renders and increasing friction for increasing velocity. This force is calculated as
   \begin{equation*}
     F_{viscous} = -b * v(t)
   \end{equation*}
-  and has been used for the experiment visualized in the following graph:
+  and has been used for the experiment visualized in the following graph, with $b = 0.75$:
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$v(t)$},
+        ylabel={F},
+        xmin=-5, xmax=6,
+        ymin=-5, ymax=5,
+        xtick={-4,-2,0,2,4,5},
+        ytick={-4,-2,0,2,4},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ very thick, color=cyan ] table {res/measurements-2-2-2.txt};
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+  Due to some imprecision, the velocity is only computed into force if $v(t) > 0.2$, as the device would become unstable otherwise.
 
   \section*{Task 3 - Virtual Wall}
 
