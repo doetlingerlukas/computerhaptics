@@ -37,6 +37,7 @@ double lastPosMeters = 0;
 double velocity = 0;
 double lastVelocity = 0;
 double lastLastVelocity = 0;
+double lastTimeAtSurface = 0;
 
 void setup() {
   // Set up serial communication
@@ -58,6 +59,9 @@ void setup() {
 
   // Initialize position valiables
   lastRawPos = analogRead(sensorPin);
+
+  // Used for hard surface rendering
+  lastTimeAtSurface = 0;
 }
 
 void loop() {
@@ -121,14 +125,14 @@ void updatePos() {
     forceRendering()
 */
 void forceRendering() {
-  frictionRendering(true);
+  //textureRendering();
 
   // Failsave
   if ((angle > 45.0) || (angle < -45.0)) {
     force = 0;
   }
 
-  Serial.print(-velocity);
+  Serial.print(absPos);
   Serial.print(" ");
   Serial.print(force);
   Serial.print("\n");
@@ -193,8 +197,10 @@ void frictionRendering(boolean coulomb) {
 
 void hardSurfaceRendering() {
 
+  double seconds = (double) millis() / 1000.0;
+
   // Surface constant k
-  const double wallConstant = 0.5;
+  const double wallConstant = 10;
 
   const double maxVibration = 2.0;
   const double t = 2.0;
@@ -204,10 +210,16 @@ void hardSurfaceRendering() {
 
   // Apply force of surface
   if ((angle < surfaceStart)) {
-    force = absPos * wallConstant;
+    force = angle * wallConstant;
+
+    // Calculate t
+    if (lastTimeAtSurface == 0) {
+      lastTimeAtSurface = seconds;
+    }
+    seconds -= lastTimeAtSurface;
 
     // Applay wibration to the force
-    double vibrationForce = maxVibration * exp(t) * cos(2* t * PI);
+    double vibrationForce = maxVibration * exp(-seconds) * cos(2 * PI * seconds);
     force += vibrationForce;
   } else {
     force = 0;
