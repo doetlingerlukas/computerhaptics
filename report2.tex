@@ -24,13 +24,44 @@
         ytick pos=left,
       ]
 
-        \addplot [ smooth, very thick, color=cyan ] table {res/measurements-2-1.txt};
+        \addplot [ only marks, color=cyan ] table {res/measurements-2-1.txt};
 
       \end{axis}
     \end{tikzpicture}
   \end{figure}
 
-  We can clearly see some outliers due to measurement imprecision, as the graph uses about 3000 coordinates.\\
   Increasing the stiffness resulted in the expected instability of the device, which started to show at $f = 0.008$. This can be noticed by the paddle bouncing from left to right without any interaction, due to imprecision of the \textit{Hapkit}. The high force moves the paddle beyond the zero position into the \textit{"opposite spring"}.
+
+  \section*{Task 3 - Virtual Wall}
+
+  The virtual wall was rendered at position $x_{wall} = 5mm$. The force was calculated by multiplying the distance past the wall with the constant $k$:
+  \begin{equation*}
+    F = k * (x_{wall} - x_{user})
+  \end{equation*}
+  The following graph shows the applied force, when moving past the border of the wall, for $k = 0.75$.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        xlabel={$x_{user}$},
+        ylabel={F},
+        xmin=0, xmax=1000,
+        ymin=-100, ymax=500,
+        xtick={250,500,750},
+        ytick={0,100,200,300,400},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ only marks, color=cyan ] table {res/measurements-2-3.txt};
+
+        \addplot [ no marks, smooth, color=red ] coordinates { (340,-100) (340,500) } node[below] {$x_{wall}$};
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+  For $k > 1.25$, the device was found to be unstable as the resulting Force $F \approx 12.5$ created to much pressure on the rather fragile \textit{Hapkit}.
 
 \end{document}
