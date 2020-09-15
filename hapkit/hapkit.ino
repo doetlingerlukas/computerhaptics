@@ -189,6 +189,29 @@ void frictionRendering(boolean coulomb) {
   }
 }
 
+void hardSurfaceRendering() {
+
+  // Surface constant k
+  const double wallConstant = 0.5;
+
+  const double maxVibration = 2.0;
+  const double t = 2.0;
+
+  // Surface is at 5mm, which is an angle of 4.76, as the radius is 60mm
+  const double surfaceStart = -4.76;
+
+  // Apply force of surface
+  if ((angle < surfaceStart)) {
+    force = absPos * wallConstant;
+
+    // Applay wibration to the force
+    double vibrationForce = maxVibration * exp(t) * cos(2* t * PI);
+    force += vibrationForce;
+  } else {
+    force = 0;
+  }
+}
+
 void textureRendering() {
 
   // Width of damping area
@@ -263,4 +286,11 @@ void setPwmFrequency(int pin, int divisor) {
     }
     TCCR2B = TCCR2B & 0b11111000 | mode;
   }
+}
+
+int sgn(double x) {
+  if (x == 0)
+    return 0;
+  else
+    return (x > 0) ? 1 : -1;
 }
