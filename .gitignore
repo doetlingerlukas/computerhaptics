@@ -10,3 +10,4 @@
 *.watcher_pid
 *.fls
 *.fdb_latexmk
+*.out

@@ -8,7 +8,8 @@
     "**/*.bbl": true,
     "**/*.blg": true,
     "**/*.dvi": true,
-    "**/*.synctex*": true
+    "**/*.synctex*": true,
+    "**/*.out*": true
   },
   "[latex]": {
     "editor.wordWrap": "on"
