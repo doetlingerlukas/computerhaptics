@@ -86,7 +86,7 @@
     \end{tikzpicture}
   \end{figure}
 
-  Due to some imprecision, the velocity is only computed into force if $v(t) > 0.2$, as the device would become unstable otherwise.
+  Due to some imprecision, the velocity is only computed into force if $v(t) > 0.2$, as the device would become unstable otherwise. Therefore we get a bit more \textit{zero-values} for $F_{coulomb}$ and $F_{viscous}$ in the above graph.
 
   \section*{Task 3 - Virtual Wall}
 
@@ -119,6 +119,55 @@
   \end{figure}
 
   For $k > 1.25$, the device was found to be unstable as the resulting Force $F \approx 12.5$ created to much pressure on the rather fragile \textit{Hapkit}.
+
+  \section*{Task 4 - Hard Surface}
+
+  For this example, an additional vibration force, $F_{vibration}$, is rendered, when entering the wall. Time, $t$ in seconds, is measured upon entering the wall and used with the following damped sine wave equation to calculate the force to add to the constant wall force $F_{wall} = 100 N/m$:
+  \begin{equation*}
+    F_{vibration} = F_{wall} * e^{-t} * cos(2 * \pi * t)
+  \end{equation*}
+  The given time-steps, $t_{loop}$, in the graph below, represent the runs of the \texttt{loop()} function within the code.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \pgfplotsset{set layers}
+
+      \begin{axis} [
+          scale only axis,
+          xmin=0, xmax=1750,
+          ymin=-250, ymax=250,
+          xtick={0,500,1000,1500},
+          ytick={-200,-150,-100,-50,0,50,100,150,200},
+          axis y line*=left,
+          xlabel={$t_{loop}$},
+          ylabel style = {align=center},
+          ylabel={$F$},
+          legend style={at={(0.02,0.98)}, anchor=north west}
+        ]
+
+        \addplot [ no marks, color=cyan ] table {res/measurements-2-4-1.txt};
+        \legend{$F$}
+      \end{axis}
+
+      \begin{axis} [
+          scale only axis,
+          xmin=0, xmax=1750,
+          ymin=-2, ymax=2,
+          ytick={-1,0,1},
+          axis y line*=right,
+          axis x line=none,
+          ylabel style = {align=center},
+          ylabel={$v$},
+        ]
+
+        \addplot [ no marks, color=orange ] table {res/measurements-2-4-2.txt};
+        \legend{$v$}
+      \end{axis}
+      \end{tikzpicture}
+  \end{figure}
+
+  We can see the point at which the surface is hit by the paddle, as the motor applies force in a vibrating way. Those spikes in force occur, since we are directly at the border of the wall. During the time inside the wall, we can see the slight change in force until we leave the wall again at $t_{loop} \approx 1500$.
 
   \section*{Task 5 - Textures}
 

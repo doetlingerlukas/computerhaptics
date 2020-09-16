@@ -125,15 +125,16 @@ void updatePos() {
     forceRendering()
 */
 void forceRendering() {
-  textureRendering();
+  // Function to render the desired force
+  //hardSurfaceRendering();
 
   // Failsave
   if ((angle > 35.0) || (angle < -35.0)) {
     force = 0;
   }
 
-  Serial.print(-absPos);
-  Serial.print(", ");
+  //Serial.print(-absPos);
+  //Serial.print(", ");
   Serial.print(-force);
   Serial.print(", ");
   Serial.print(-velocity);
@@ -201,10 +202,10 @@ void hardSurfaceRendering() {
 
   double seconds = (double) millis() / 1000.0;
 
-  // Surface constant k
-  const double wallConstant = 10;
+  // Wall force in N/m
+  const double wallForce = 100;
 
-  const double maxVibration = 2.0;
+  const double maxVibration = 100;
   const double t = 2.0;
 
   // Surface is at 5mm, which is an angle of 4.76, as the radius is 60mm
@@ -212,7 +213,6 @@ void hardSurfaceRendering() {
 
   // Apply force of surface
   if ((angle < surfaceStart)) {
-    force = angle * wallConstant;
 
     // Calculate t
     if (lastTimeAtSurface == 0) {
@@ -222,7 +222,7 @@ void hardSurfaceRendering() {
 
     // Applay wibration to the force
     double vibrationForce = maxVibration * exp(-seconds) * cos(2 * PI * seconds);
-    force += vibrationForce;
+    force = sgn(absPos) * wallForce + vibrationForce;
   } else {
     force = 0;
   }
