@@ -126,7 +126,7 @@
   \begin{equation*}
     F_{v} = -b_{v} * v_{t}
   \end{equation*}
-  The damper itself was set to a value of 1 to minimize vibrations, that may occur due to the discontinuity in force.
+  The damper itself was set to a value of 1 to minimize vibrations, that may occur due to the discontinuity in force. Width of the damping area $w = 0.01m$.
 
   \begin{figure}[H]
     \centering
@@ -134,19 +134,21 @@
       \begin{axis}[
         xlabel={$x_{user}$},
         ylabel={F},
-        xmin=-3000, xmax=3000,
-        ymin=-2, ymax=2,
-        xtick={-2500,-1500,-500,0,500,1500,2500},
-        ytick={-2,-1,0,1,2},
+        xmin=0, xmax=3000,
+        ymin=-1, ymax=1,
+        xtick={0,500,1500,2500},
+        ytick={-1,0,1},
         xtick pos=left,
         ytick pos=left,
       ]
 
-        \addplot [ only marks, color=cyan ] table {res/measurements-2-5.txt};
+        \addplot [ no marks, color=cyan ] table {res/measurements-2-5.txt};
 
       \end{axis}
     \end{tikzpicture}
   \end{figure}
+
+  The first texture part started at the absolute position $x_{user} = 0$. We can clearly see where the areas are located as the force there is zero. Since we are moving in a positive direction, we get a negative force, countering our velocity. The variations in force are to be expected, as we don't have a stable velocity.
 
   \section*{Resources}
 

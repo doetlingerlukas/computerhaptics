@@ -125,16 +125,18 @@ void updatePos() {
     forceRendering()
 */
 void forceRendering() {
-  //textureRendering();
+  textureRendering();
 
   // Failsave
-  if ((angle > 45.0) || (angle < -45.0)) {
+  if ((angle > 35.0) || (angle < -35.0)) {
     force = 0;
   }
 
-  Serial.print(absPos);
-  Serial.print(" ");
-  Serial.print(force);
+  Serial.print(-absPos);
+  Serial.print(", ");
+  Serial.print(-force);
+  Serial.print(", ");
+  Serial.print(-velocity);
   Serial.print("\n");
 }
 
@@ -229,7 +231,7 @@ void hardSurfaceRendering() {
 void textureRendering() {
 
   // Width of damping area
-  double w = .0015;
+  double w = .01;
   double damper = 1;
   
   for (int i=0; i<9; i=i+2) {
