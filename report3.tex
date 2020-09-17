@@ -1,0 +1,39 @@
+\input{settings.tex}
+
+\pgfplotsset{every tick label/.append style={font=\tiny}}
+
+\begin{document}
+  \title{Computer Haptics: Assignment 2}
+  \maketitle
+
+  \section*{Task 1 - P-Type}
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        height=7cm,
+        width=\textwidth,
+        xlabel={$v(t)$},
+        ylabel={F},
+        xmin=0, xmax=2000,
+        ymin=-15, ymax=15,
+        xtick={0,500,1000,1500},
+        ytick={-10,-5,-2,0,2,5,10},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ smooth, very thick, color=cyan ] table {res/measurements-3-1-1.txt};
+
+        \addplot [ smooth, thick, color=orange ] table {res/measurements-3-1-2.txt};
+
+        \addplot [ smooth, color=red ] table {res/measurements-3-1-3.txt};
+
+        \legend{$k_p = 0.15$,$k_p = 0.35$,$k_p = 0.70$}
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+\end{document}

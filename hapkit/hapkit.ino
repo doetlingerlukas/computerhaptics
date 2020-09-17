@@ -67,7 +67,10 @@ void setup() {
 void loop() {
   updatePos();
   
-  forceRendering();
+  //forceRendering();
+
+  control();
+  
   motorControl();
 }
 
@@ -114,11 +117,26 @@ void updatePos() {
   velocity = -(.95*.95) * lastLastVelocity + 2*.95*lastVelocity + (1-.95)*(1-.95)*(posMeters - lastPosMeters)/.0001;
   lastPosMeters = posMeters;
   lastLastVelocity = lastVelocity;
-  lastVelocity = velocity;
+  lastVelocity = velocity; 
+}
 
-  //Serial.print("Velocity: ");
-  //Serial.print(velocity);
-  //Serial.print("\n");  
+/*
+    Control
+*/
+void control() {
+  const double refInput = 20;
+  double error = angle - refInput;
+
+  const double Kp = 0.15;
+
+  force = error * Kp + 0.7 * sgn(error);
+
+  Serial.print(millis());
+  Serial.print(" ");
+  Serial.print(force);
+  //Serial.print(" ");
+  //Serial.print(angle);
+  Serial.print("\n");
 }
 
 /*
@@ -126,7 +144,7 @@ void updatePos() {
 */
 void forceRendering() {
   // Function to render the desired force
-  //hardSurfaceRendering();
+  // springForceRendering();
 
   // Failsave
   if ((angle > 35.0) || (angle < -35.0)) {
