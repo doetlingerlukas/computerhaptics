@@ -40,7 +40,6 @@ double lastLastVelocity = 0;
 double lastTimeAtSurface = 0;
 double lastTime = 0;
 double errorSum = 0;
-double lastError = 0;
 
 void setup() {
   // Set up serial communication
@@ -135,8 +134,6 @@ void control() {
   Serial.print(millis());
   Serial.print(" ");
   Serial.print(force);
-  //Serial.print(" ");
-  //Serial.print(errorSum);
   Serial.print("\n");
 }
 
@@ -157,19 +154,15 @@ void pd(double error) {
 void pid(double error) {
   const double Kp = 0.025;
   const double Kd = 0.05;
-  const double Ki = 0.0001;
+  const double Ki = 0.00001;
   
   unsigned long now = millis();
   double timeChange = (double)(now - lastTime);
 
-  if (true) {
-    errorSum += (error * timeChange);
-  }
-  double dErr = (error - lastError) / timeChange;
+  errorSum += (error * timeChange);
 
-  force = (error * Kp + 0.4 * sgn(error)) + Kd * dErr + Ki * errorSum;
+  force = (error * Kp + 0.4 * sgn(error)) - Kd * velocity + Ki * errorSum;
   
-  lastError = error;
   lastTime = now;
 }
 
