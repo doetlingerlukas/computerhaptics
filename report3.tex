@@ -6,7 +6,7 @@
   \title{Computer Haptics: Assignment 2}
   \maketitle
 
-  \section*{Task 1 - P-Type}
+  \section*{Task 1 - P}
 
   \begin{figure}[H]
     \centering
@@ -35,5 +35,37 @@
       \end{axis}
     \end{tikzpicture}
   \end{figure}
+
+  \section*{Task 2 - PD}
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        height=7cm,
+        width=\textwidth,
+        xlabel={$v(t)$},
+        ylabel={F},
+        xmin=0, xmax=2000,
+        ymin=-1, ymax=1,
+        xtick={0,500,1000,1500},
+        ytick={-1,-0.5,0,0.5,1},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ smooth, very thick, color=cyan ] table {res/measurements-3-2-1.txt};
+
+        \addplot [ smooth, thick, color=blue ] table {res/measurements-3-2-2.txt};
+
+        \addplot [ smooth, thick, color=magenta ] table {res/measurements-3-2-3.txt};
+
+        \legend{$k_d = 0.10$ $k_p = 0.0250$,$k_d = 0.15$ $k_p = 0.0175$,$k_d = 0.15$ $k_p = 0.0400$}
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
+
+  $k_p = 0.025$
 
 \end{document}

@@ -127,9 +127,7 @@ void control() {
   const double refInput = 20;
   double error = angle - refInput;
 
-  const double Kp = 0.15;
-
-  force = error * Kp + 0.7 * sgn(error);
+  pd(error);
 
   Serial.print(millis());
   Serial.print(" ");
@@ -137,6 +135,20 @@ void control() {
   //Serial.print(" ");
   //Serial.print(angle);
   Serial.print("\n");
+}
+
+// P-Type Control
+void p(double error) {
+  const double Kp = 0.15;
+
+  force = error * Kp + 0.7 * sgn(error);
+}
+// PD-Type Control
+void pd(double error) {
+  const double Kp = 0.04;
+  const double Kd = 0.15;
+
+  force = (error * Kp + 0.4 * sgn(error)) - velocity * Kd;
 }
 
 /*
