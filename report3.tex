@@ -47,7 +47,7 @@
         xlabel={$v(t)$},
         ylabel={F},
         xmin=0, xmax=2000,
-        ymin=-1, ymax=1,
+        ymin=-1.25, ymax=1,
         xtick={0,500,1000,1500},
         ytick={-1,-0.5,0,0.5,1},
         xtick pos=left,
@@ -66,6 +66,32 @@
     \end{tikzpicture}
   \end{figure}
 
-  $k_p = 0.025$
+  \section*{Task 3 - PID}
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[
+        height=7cm,
+        width=\textwidth,
+        xlabel={$v(t)$},
+        ylabel={F},
+        xmin=0, xmax=2000,
+        ymin=-2, ymax=2,
+        xtick={0,500,1000,1500},
+        ytick={-2,-1,0,1,2},
+        xtick pos=left,
+        ytick pos=left,
+      ]
+
+        \addplot [ smooth, very thick, color=cyan ] table {res/measurements-3-3-1.txt};
+
+        \addplot [ smooth, thick, color=blue ] table {res/measurements-3-3-2.txt};
+
+        \legend{$k_i = 0.0001$ $k_d = 0.05$ $k_p = 0.025$,$k_i = 0.0003$ $k_d = 0.05$ $k_p = 0.035$}
+
+      \end{axis}
+    \end{tikzpicture}
+  \end{figure}
 
 \end{document}

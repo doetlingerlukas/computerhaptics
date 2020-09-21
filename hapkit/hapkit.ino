@@ -38,6 +38,9 @@ double velocity = 0;
 double lastVelocity = 0;
 double lastLastVelocity = 0;
 double lastTimeAtSurface = 0;
+double lastTime = 0;
+double errorSum = 0;
+double lastError = 0;
 
 void setup() {
   // Set up serial communication
@@ -133,7 +136,7 @@ void control() {
   Serial.print(" ");
   Serial.print(force);
   //Serial.print(" ");
-  //Serial.print(angle);
+  //Serial.print(errorSum);
   Serial.print("\n");
 }
 
@@ -149,6 +152,25 @@ void pd(double error) {
   const double Kd = 0.15;
 
   force = (error * Kp + 0.4 * sgn(error)) - velocity * Kd;
+}
+// PID-Type Control
+void pid(double error) {
+  const double Kp = 0.025;
+  const double Kd = 0.05;
+  const double Ki = 0.0001;
+  
+  unsigned long now = millis();
+  double timeChange = (double)(now - lastTime);
+
+  if (true) {
+    errorSum += (error * timeChange);
+  }
+  double dErr = (error - lastError) / timeChange;
+
+  force = (error * Kp + 0.4 * sgn(error)) + Kd * dErr + Ki * errorSum;
+  
+  lastError = error;
+  lastTime = now;
 }
 
 /*
