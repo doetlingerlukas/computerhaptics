@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 serialport = "3.3.0"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["endpointvolume", "objbase", "mmdeviceapi"] }

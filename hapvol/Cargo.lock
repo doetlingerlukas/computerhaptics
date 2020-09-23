@@ -53,6 +53,7 @@ name = "hapvol"
 version = "0.1.0"
 dependencies = [
  "serialport",
+ "winapi",
 ]
 
 [[package]]

@@ -1,25 +1,21 @@
-use std::{
-  io,
-  process::exit,
-  time::Duration,
-};
+use std::{io, process::exit, time::Duration};
 
-use serialport::*;
+use serialport::SerialPortSettings;
+
+mod volume;
+use volume::*;
 
 fn main() {
   let port_name = "COM3";
   let baud_rate = 57600;
 
-  let settings = SerialPortSettings {
-    baud_rate: baud_rate,
-    data_bits: DataBits::Eight,
-    flow_control: FlowControl::None,
-    parity: Parity::None,
-    stop_bits: StopBits::One,
-    timeout: Duration::from_millis(10),
-  };
+  let mut settings = SerialPortSettings::default();
+  settings.baud_rate = baud_rate;
+  settings.timeout = Duration::from_millis(10);
 
-  match open_with_settings(port_name, &settings) {
+  get_audio_endpoint_volume();
+
+  match serialport::open_with_settings(port_name, &settings) {
     Ok(mut port) => {
       let mut serial_buf: Vec<u8> = vec![0; 1000];
       println!("Receiving data on {} at {} baud:", &port_name, &baud_rate);
@@ -37,10 +33,7 @@ fn main() {
       }
     }
     Err(e) => {
-      eprintln!(
-        "Failed to open serial port '{}' with error: {}",
-        port_name, e
-      );
+      eprintln!("Failed to open serial port '{}' with error: {}", port_name, e);
       exit(1);
     }
   }
