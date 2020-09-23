@@ -7,6 +7,26 @@ use winapi::um::mmdeviceapi::*;
 use winapi::um::objbase::*;
 use winapi::Interface;
 
+pub struct AudioDevice {
+  endpoint: *mut IAudioEndpointVolume
+}
+
+impl AudioDevice {
+  pub fn set_volume(self, volume: f32) {
+    unsafe { 
+      (*self.endpoint).SetMasterVolumeLevelScalar(volume, std::ptr::null_mut())
+    };
+  }
+}
+
+impl Default for AudioDevice {
+  fn default() -> Self {
+    Self {
+      endpoint: get_audio_endpoint_volume()
+    }
+  }
+}
+
 fn get_device_enumerator() -> *mut IMMDeviceEnumerator {
   let cls_mm_device_enum: guiddef::GUID = CLSID_MMDeviceEnumerator;
   let iid_imm_device_enumerator = IMMDeviceEnumerator::uuidof();
@@ -54,11 +74,9 @@ fn get_iaudio_endpoint_volume(pp_device: *mut IMMDevice) -> *mut IAudioEndpointV
   return endpoint_device;
 }
 
-pub fn get_audio_endpoint_volume() { //-> *mut IAudioEndpointVolume {
+fn get_audio_endpoint_volume() -> *mut IAudioEndpointVolume {
   unsafe { CoInitialize(std::ptr::null_mut()) };
   let device_enumerator: *mut IMMDeviceEnumerator = get_device_enumerator();
   let pp_device: *mut IMMDevice = get_imm_device(device_enumerator);
-  let endpoint: *mut IAudioEndpointVolume = get_iaudio_endpoint_volume(pp_device);
-
-  unsafe { (*endpoint).SetMasterVolumeLevelScalar(0.4, std::ptr::null_mut()) };
+  return get_iaudio_endpoint_volume(pp_device);
 }

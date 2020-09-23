@@ -3,7 +3,7 @@ use std::{io, process::exit, time::Duration};
 use serialport::SerialPortSettings;
 
 mod volume;
-use volume::*;
+use volume::AudioDevice;
 
 fn main() {
   let port_name = "COM3";
@@ -13,7 +13,7 @@ fn main() {
   settings.baud_rate = baud_rate;
   settings.timeout = Duration::from_millis(10);
 
-  get_audio_endpoint_volume();
+  let audio_device = AudioDevice::default();
 
   match serialport::open_with_settings(port_name, &settings) {
     Ok(mut port) => {
