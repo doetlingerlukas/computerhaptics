@@ -1,3 +1,5 @@
+# Arduino
+
 */build
 
 # LaTeX
@@ -11,3 +13,7 @@
 *.fls
 *.fdb_latexmk
 *.out
+
+# Rust
+
+*/target
