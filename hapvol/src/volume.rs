@@ -8,22 +8,18 @@ use winapi::um::objbase::*;
 use winapi::Interface;
 
 pub struct AudioDevice {
-  endpoint: *mut IAudioEndpointVolume
+  endpoint: *mut IAudioEndpointVolume,
 }
 
 impl AudioDevice {
-  pub fn set_volume(self, volume: f32) {
-    unsafe { 
-      (*self.endpoint).SetMasterVolumeLevelScalar(volume, std::ptr::null_mut())
-    };
+  pub fn set_volume(&self, volume: f32) {
+    unsafe { (*self.endpoint).SetMasterVolumeLevelScalar(volume, std::ptr::null_mut()) };
   }
 }
 
 impl Default for AudioDevice {
   fn default() -> Self {
-    Self {
-      endpoint: get_audio_endpoint_volume()
-    }
+    Self { endpoint: get_audio_endpoint_volume() }
   }
 }
 

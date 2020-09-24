@@ -41,6 +41,9 @@ double lastTimeAtSurface = 0;
 double lastTime = 0;
 double errorSum = 0;
 
+// iteration counter
+int i = 0;
+
 void setup() {
   // Set up serial communication
   Serial.begin(57600);
@@ -67,10 +70,20 @@ void setup() {
 }
 
 void loop() {
+  i++;
   updatePos();
 
-  Serial.print(angle);
-  Serial.print("\n");
+  // Volume knob ranges from -25 to 25 degrees
+  double volume = abs(calculateVolume(-30.0, 30.0));
+
+  if (i % 75 == 0)
+    Serial.println(volume);
+}
+
+// Returns value for the volume between 0 and 1
+double calculateVolume(double start, double end) {
+  double abs_volume = ((angle + start) / ((end - start) / 100.0));
+  return abs_volume / 100.0;
 }
 
 void updatePos() {
