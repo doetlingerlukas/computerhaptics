@@ -20,7 +20,7 @@ fn main() {
   settings.baud_rate = baud_rate;
   settings.timeout = Duration::from_millis(10);
 
-  let volume_lock = Arc::new(RwLock::new(0.0));
+  let volume_lock = Arc::new(RwLock::new(f32::default()));
   init_listener(volume_lock.clone());
 
   match serialport::open_with_settings(port_name, &settings) {

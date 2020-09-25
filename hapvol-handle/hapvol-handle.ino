@@ -49,7 +49,7 @@ void setup() {
   Serial.begin(57600);
 
   // Set PWM frequency
-  // setPwmFrequency(pwmPin, 1);
+  setPwmFrequency(pwmPin, 1);
 
   // Input pins
   pinMode(sensorPin, INPUT); // set MR sensor pin to be an input
@@ -73,17 +73,57 @@ void loop() {
   i++;
   updatePos();
 
-  // Volume knob ranges from -25 to 25 degrees
-  double volume = abs(calculateVolume(-30.0, 30.0));
+  const double startAngle = -30.0;
+  const double endAngle = 30.0;
 
-  if (i % 75 == 0)
+  // Volume knob ranges from -25 to 25 degrees
+  double volume = abs(calculateVolume(startAngle, endAngle));
+
+  force =  calculateWallForce(startAngle, endAngle);
+  force += calculateTextureForce(startAngle, endAngle, volume);
+
+  if (i % 75 == 0) {
     Serial.println(volume);
+  }
+
+  motorControl();
 }
 
 // Returns value for the volume between 0 and 1
 double calculateVolume(double start, double end) {
-  double abs_volume = ((angle + start) / ((end - start) / 100.0));
-  return abs_volume / 100.0;
+  if (angle >= end) {
+    return 0.0;
+  } else if (angle <= start) {
+    return 1.0;
+  }
+  
+  double absVolume = ((angle + start) / ((end - start) / 100.0));
+  return absVolume / 100.0;
+}
+
+double calculateWallForce(double start, double end) {
+  const double wallConstant = 0.15;
+
+  // Apply wall force
+  if (angle < start || angle > end) {
+    return angle * wallConstant;
+  }
+  return 0.0;
+}
+
+double calculateTextureForce(double start, double end, double volume) {
+  if (angle <= start || angle >= end) {
+    return 0.0;
+  }
+
+  const double damper = 1;
+  int absVolume = (int)(volume * 100.0);
+
+  // Apply texture force
+  if (absVolume % 10 == 0) {
+    return -damper * velocity;
+  }
+  return 0.0;
 }
 
 void updatePos() {
@@ -130,4 +170,73 @@ void updatePos() {
   lastPosMeters = posMeters;
   lastLastVelocity = lastVelocity;
   lastVelocity = velocity; 
+}
+
+
+/*
+      Output to motor
+*/
+void motorControl() {
+  Tp = rp / rs * rh * force;  // Compute the require motor pulley torque (Tp) to generate that force
+  // Determine correct direction for motor torque
+  // You may need to reverse the digitalWrite functions according to your motor connections
+  if (force < 0) {
+    digitalWrite(dirPin, HIGH);
+  } else {
+    digitalWrite(dirPin, LOW);
+  }
+
+  // Compute the duty cycle required to generate Tp (torque at the motor pulley)
+  duty = sqrt(abs(Tp) / 0.03);
+
+  // Make sure the duty cycle is between 0 and 100%
+  if (duty > 1) {
+    duty = 1;
+  } else if (duty < 0) {
+    duty = 0;
+  }
+  output = (int)(duty * 255);  // convert duty cycle to output signal
+  
+  analogWrite(pwmPin, output); // output the signal
+}
+
+/*
+   setPwmFrequency
+*/
+void setPwmFrequency(int pin, int divisor) {
+  byte mode;
+  if (pin == 5 || pin == 6 || pin == 9 || pin == 10) {
+    switch (divisor) {
+      case 1: mode = 0x01; break;
+      case 8: mode = 0x02; break;
+      case 64: mode = 0x03; break;
+      case 256: mode = 0x04; break;
+      case 1024: mode = 0x05; break;
+      default: return;
+    }
+    if (pin == 5 || pin == 6) {
+      TCCR0B = TCCR0B & 0b11111000 | mode;
+    } else {
+      TCCR1B = TCCR1B & 0b11111000 | mode;
+    }
+  } else if (pin == 3 || pin == 11) {
+    switch (divisor) {
+      case 1: mode = 0x01; break;
+      case 8: mode = 0x02; break;
+      case 32: mode = 0x03; break;
+      case 64: mode = 0x04; break;
+      case 128: mode = 0x05; break;
+      case 256: mode = 0x06; break;
+      case 1024: mode = 0x7; break;
+      default: return;
+    }
+    TCCR2B = TCCR2B & 0b11111000 | mode;
+  }
+}
+
+int sgn(double x) {
+  if (x == 0)
+    return 0;
+  else
+    return (x > 0) ? 1 : -1;
 }
