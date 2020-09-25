@@ -105,7 +105,7 @@ double calculateWallForce(double start, double end) {
   const double wallConstant = 0.15;
 
   // Apply wall force
-  if (angle < start || angle > end) {
+  if (angle < start-2 || angle > end+2) {
     return angle * wallConstant;
   }
   return 0.0;
@@ -116,7 +116,7 @@ double calculateTextureForce(double start, double end, double volume) {
     return 0.0;
   }
 
-  const double damper = 1;
+  const double damper = 2;
   int absVolume = (int)(volume * 100.0);
 
   // Apply texture force
