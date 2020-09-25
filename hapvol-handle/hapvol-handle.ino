@@ -27,10 +27,10 @@ const double handle_radius = 0.065659;   //[m]
 
 // Position tracking variables
 int absPos = 0;
+int initPos = 0;
 int rawPos = 0;
 int lastRawPos = 0;
 int flipNumber = 0;
-const int flipThresh = 300;
 double angle = 0;
 double posMeters = 0;
 double lastPosMeters = 0;
@@ -40,6 +40,7 @@ double lastLastVelocity = 0;
 double lastTimeAtSurface = 0;
 double lastTime = 0;
 double errorSum = 0;
+boolean flipped = false;
 
 // iteration counter
 int i = 0;
@@ -64,6 +65,7 @@ void setup() {
 
   // Initialize position valiables
   lastRawPos = analogRead(sensorPin);
+  initPos = lastRawPos;
 
   // Used for hard surface rendering
   lastTimeAtSurface = 0;
@@ -138,25 +140,30 @@ void updatePos() {
     minVal = rawPos;
   }
 
+  int maxDistance = maxVal - minVal;
+  int threshold = maxDistance * 0.3;
+
   // Calculate position difference
   int rawDiff = rawPos - lastRawPos;
   int rawOffset = abs(rawDiff);
 
-  // Update absolute position
-  if((rawOffset > flipThresh)) {
+  if (rawOffset > threshold && !flipped) {
     if(rawDiff > 0) {
       flipNumber--;
-      absPos = absPos + (rawPos - maxVal) + (minVal - lastRawPos);
     } else {
       flipNumber++;
-      absPos = absPos + (maxVal - lastRawPos) + (rawPos - minVal);
     }
+
+    flipped = true;
   } else {
-    absPos += rawDiff;
+    flipped = false;
   }
 
   // Set last raw position
   lastRawPos = rawPos;
+
+  // Update absolute position
+  absPos = rawPos + flipNumber * maxDistance - initPos;
 
   // Calculate angle
   angle = absPos / absPosPerDegree;
