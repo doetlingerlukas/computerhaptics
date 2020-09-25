@@ -118,11 +118,12 @@ double calculateTextureForce(double start, double end, double volume) {
     return 0.0;
   }
 
-  const double damper = 2;
+  const double damper = 1;
   int absVolume = (int)(volume * 100.0);
 
   // Apply texture force
-  if (absVolume % 10 == 0) {
+  int center = absVolume % 10;
+  if (center < 1 && center > -1) {
     return -damper * velocity;
   }
   return 0.0;
