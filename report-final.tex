@@ -71,6 +71,10 @@
       \end{tikzpicture}
   \end{figure}
 
+  \section*{Implementation}
+
+  The desktop application has been implemented using the programming language \textit{Rust}. The application receives the volume values through serial port communication. It utilizes the \texttt{winapi} to then set the system volume in Windows. The program requires the installation of \textit{Rust} and it's package manager \textit{Cargo}. It can be run from the \texttt{hapvol} directory with the command \texttt{cargo run}.
+
   \section*{Future Work}
 
   To increase precision of the system, one could use a control approach in combination with bigger volume steps of five. Although a user could then only change the volume in steps of five, those steps could be locked by a control-function. This would require the user to use a certain amount of force to change the volume. Combining this with PD control, could create a more knob like feeling.
