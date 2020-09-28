@@ -1,0 +1,78 @@
+\input{settings.tex}
+
+\pgfplotsset{every tick label/.append style={font=\tiny}}
+
+\begin{document}
+  \title{Computer Haptics: Final Project - \textit{Hapvol}}
+  \maketitle
+
+  \section*{Overview}
+
+  The goal for the final project was turning the \textit{Hapkit} device into a volume controller for Windows. This application was called \textit{Hapvol}. The haptic paddle functions like a knob, turning the speaker volume up and down. Additionally, haptic feedback is outputted to the user, indicating different volume steps and borders. Hence, the effects \textbf{vibration} and \textbf{wall} were used. The vibration force is rendered at predefined volume steps to simulate a knob-like feeling. This was done at each step of 10 for a volume in the range of 0 to 100. The wall-type force rendering is encountered by a user when reaching the max- or min-value of the volume.
+
+  \section*{Haptic Feedback}
+
+  The haptic feedback enhances the system as the user gets a clear perspective of the volume borders through the haptic wall. Additionally, the user feels a vibration on passing volume steps of 10 (i.e. at volume 10, 20, 30 and so on). This creates a very knob like feeling, making the system more intuitive to use.
+
+  The volume range from 0 to 100 is mapped to a range starting at -30 degrees and ending at 30 degrees. The wall, with force $F_{wall}$, is rendered at 2 degrees past those borders using the following formula, where $k = 0.15$ is the wall constant and $\alpha$ the current angle of the paddle:
+  \begin{equation*}
+    F_{wall} = k * \alpha
+  \end{equation*}
+  The vibration force is calculated using the formula for textures from the second assignment. The width of this texture is $\approx 2$ degrees, centred at the volume steps. The force $F_{texture}$ is calculated using the velocity of the handle, $v$, and a damper $d = 1$, with the formula
+  \begin{equation*}
+    F_{texture} = -d * v
+  \end{equation*}
+  The following graph shows the force development, when using the application to turn the volume from 0 to 100. The graph displays the volume as a range from 0 to 1, as those decimal values are used by the application itself. We can clearly see the wall force at the borders in combination with the texture force and it's dependence to the velocity.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \pgfplotsset{set layers}
+
+      \begin{axis} [
+          height=7cm,
+          width=\textwidth,
+          scale only axis,
+          xmin=-0.02, xmax=1.02,
+          ymin=-6, ymax=6,
+          xtick={0,0.2,0.4,0.6,0.8,1},
+          ytick={-5,-3,-1,0,1,3,5},
+          axis y line*=left,
+          xlabel={$Volume$},
+          ylabel style = {align=center},
+          ylabel={$F$},
+          legend style={at={(0.02,0.98)}, anchor=north west}
+        ]
+
+        \addplot [ thick, no marks, color=blue ] table {res/measurements-final-w.txt};
+
+        \addplot [ very thick, no marks, color=cyan ] table {res/measurements-final-t.txt};
+
+        \legend{$F_{wall}$,$F_{texture}$}
+      \end{axis}
+
+      \begin{axis} [
+          height=7cm,
+          width=\textwidth,
+          scale only axis,
+          xmin=-0.02, xmax=1.02,
+          ymin=-2, ymax=2,
+          ytick={-1,0,1},
+          axis y line*=right,
+          axis x line=none,
+          ylabel style = {align=center},
+          ylabel={$v$},
+        ]
+
+        \addplot [ thick, no marks, color=orange ] table {res/measurements-final-v.txt};
+
+        \legend{$v$}
+      \end{axis}
+      \end{tikzpicture}
+  \end{figure}
+
+  \section*{Future Work}
+
+  To increase precision of the system, one could use a control approach in combination with bigger volume steps of five. Although a user could then only change the volume in steps of five, those steps could be locked by a control-function. This would require the user to use a certain amount of force to change the volume. Combining this with PD control, could create a more knob like feeling.
+
+\end{document}
